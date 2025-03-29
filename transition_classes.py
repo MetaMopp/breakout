@@ -14,7 +14,7 @@ class Brick:
         self.rect = pygame.FRect(x, y, width, hight)
         self.hit_count = 0
 
-    def proces_hit(self, wall, gamestate):
+    def process_hit(self, hit_brick, wall, gamestate):
         # hit brick?
         self.hit = hit_brick
         self.hit_count += 1
@@ -54,7 +54,7 @@ class Wall:
         self.bricks =[] # list of bricks
         self.hit_bricks = []
 
-        ### WALL PATTTERNS ###
+    ### WALL PATTTERNS ###
     def pattern(self, name, color, hit_type, velocity):
         DISTANCETOP = 70 # replace this later: self.dis_top
         if name == 1 or name == "bonus_1":
@@ -195,36 +195,7 @@ class Wall:
     def update(self, size): # detect collision with wall, remove bricks
 
         for brick in self.bricks:
-            brick.update(self, size)
-
-
-        # hit brick?
-        '''hit = ball.rect.collidelist(self.bricks)
-        if hit >= 0:
-            hit_brick = self.bricks[hit]  
-            hit_brick.hit_count += 1
-            if hit_brick.hit_type <= hit_brick.hit_count:
-                Sounds.spike_sound.stop()
-                Sounds.destroy_brick.play()
-                self.bricks.remove(hit_brick)
-                gamestate.brick_score += 1  
-            else:
-                Sounds.spike_sound.stop()
-                Sounds.touch_brick.play()
-                self.hit_bricks.append(hit_brick)'''
-                   
-                                          
-        '''#detect collision: ball/brick, change ball direction
-            intersection = ball.rect.clip(hit_brick) 
-            if intersection[2] > intersection[3]:
-                ball.velocity[1] *= -1
-                if ball.velocity[1] != 0:
-                    ball.rect[1] += ball.velocity[1] / abs(ball.velocity[1]) # push to avoid double collision
-            if intersection[2] < intersection[3]:
-                ball.velocity[0] *= -1
-                if ball.velocity[0] != 0:
-                    ball.rect[0] += ball.velocity[0] / abs(ball.velocity[0]) # push to avoid double collision'''
-      
+            brick.update(size)
    
     # update bricks that are obstacles
     def update_obstacle(self, ball, size):
