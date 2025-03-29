@@ -118,6 +118,7 @@ class Game:
             for brick in obstacle.bricks:
                 self.all_bricks.append(brick)
         print("all bricks: ",len(self.all_bricks))
+
         self.spikes = self.gamestate.current_level.get_spikes()
         self.coins = self.gamestate.current_level.get_coins()
         self.paddle = self.gamestate.current_level.get_paddle(size)
@@ -132,10 +133,19 @@ class Game:
             # UPDATE GAMEOBJECTS 
             self.gamestate.status_quo.update(self.gamestate.lives, self.gamestate.stopwatch, self.gamestate.brick_score)
             self.paddle.update(size[0], events)
-            self.ball.update(size, self.paddle, self.walls[0], events, self.gamestate) 
+            self.ball.update(size, self.paddle, self.all_bricks, events, self.gamestate) 
+
+            # clear bricks
+            for brick in self.all_bricks:
+                brick.update(size)
+                print("len all_bricks: ", len(self.all_bricks))
+                if (len(self.all_bricks) == self.n_bricks) and (self.coins == []):
+                    if len(self.spikes) != 0:
+                        self.spikes.clear()
+                    Events.post_clear_level()
 
             # clear bricks/walls and post CLEAR LEVEl event
-            clear_walls = 0
+            '''clear_walls = 0
             for wall in self.walls:
                 wall.update(size) 
                 if wall.bricks == []:
@@ -147,7 +157,7 @@ class Game:
 
             # update obstacle wall
             for obstacle in self.obstacles:
-                obstacle.update_obstacle(self.ball, size)
+                obstacle.update_obstacle(self.ball, size)'''
 
             # update spikes
             for spike in self.spikes:
