@@ -6,7 +6,8 @@ import pygame.freetype
 import time
 from stopwatch import Stopwatch 
 from events import Events
-from gameobject import Ball
+from ball import Ball
+#from gameobject import Ball
 from level import Level
 from breakout_sounds import Sounds 
 from status_quo import StatusQuo
@@ -41,7 +42,7 @@ class Gamestate:
         Level 50, 7    # 8    Level 51, 8          # 9
         Level 52, 9    # 10   Level 53, "bonus_3"  # 11
         Level 54, 10   # 12'''
-        self.current_level_index = 3
+        self.current_level_index = 2
         self.current_level = self.levels[self.current_level_index]        
         self.status_quo = StatusQuo() 
         self.you_won = YouWon() 
@@ -102,7 +103,21 @@ class Game:
     # set game levels    
     def game_level(self, size):
         self.walls = self.gamestate.current_level.get_walls()
-        self.obstacles = self.gamestate.current_level.get_obstacles()
+        self.obstacles, self.n_bricks = self.gamestate.current_level.get_obstacles()
+
+        # loop through all lists and create single list with all bricks
+        self.wall = []
+        self.obstacle = []
+        self.all_bricks= []
+        for wall in self.walls:
+            self.wall.append(wall)
+            for brick in wall.bricks:
+                self.all_bricks.append(brick)
+        for obstacle in self.obstacles:
+            self.obstacle.append(obstacle)
+            for brick in obstacle.bricks:
+                self.all_bricks.append(brick)
+        print("all bricks: ",len(self.all_bricks))
         self.spikes = self.gamestate.current_level.get_spikes()
         self.coins = self.gamestate.current_level.get_coins()
         self.paddle = self.gamestate.current_level.get_paddle(size)
