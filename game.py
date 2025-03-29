@@ -136,11 +136,13 @@ class Game:
             # clear complete list of bricks  and post CLEAR LEVEL event
             for brick in self.all_bricks:
                 brick.update(size)
+                #print("n_bricks: ", self.n_bricks)
                 #print("game 141: len all_bricks: ", len(self.all_bricks))
-                if (len(self.all_bricks) == self.n_bricks) and (self.coins == []):
-                    if len(self.spikes) != 0:
-                        self.spikes.clear()
-                    Events.post_clear_level()
+            if (len(self.all_bricks) == self.n_bricks) and (self.coins == []):
+                print(len(self.all_bricks))
+                if len(self.spikes) != 0:
+                    self.spikes.clear()
+                Events.post_clear_level()
 
             # update spikes
             for spike in self.spikes:
