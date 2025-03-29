@@ -25,7 +25,7 @@ class Ball:
         screen.blit(self.ball_img, self.rect)
 
 
-    def update(self, size, paddle, wall, events, gamestate):
+    def update(self, size, paddle, all_bricks, events, gamestate):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and self.velocity.xy == (0,0):
