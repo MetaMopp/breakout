@@ -254,7 +254,6 @@ class Level:
             coin = Coin()
             coin.distribute(p[1], p[2], p[3], p[4], p[5], p[6])
             coins.append(coin)
-            #print("level coin", coin.coins)
         return coins
         
     def get_paddle(self, size):

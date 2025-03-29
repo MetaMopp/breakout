@@ -74,8 +74,7 @@ class Ball:
                 self.velocity.xy - self.velocity.xy
 
         ### TO DO: Collision detection with bricks ###
-        #print("Ball 72 object list all_bricks", all_bricks)
-        #print("Ball 73 lenght all_bricks: ", len(all_bricks))
+       
         # Returns list of all indices containing rects that collide with the Rect. If no intersecting rectangles are found: empty list
         collision_list = self.rect.collidelistall(all_bricks) 
         if len(collision_list) >= 1:
@@ -104,7 +103,6 @@ class Ball:
 
                 # DETECT BALL'S DIRECTION AND ON WHICH AXIS IT HITS THE BRICK; CALC CONSUMED VECTOR
             if self.velocity.xy == (0, 0):
-                print("self velocity: ", self.velocity)
                 pass
             else:
                 # 1 diagonal: from bottomleft to topright
@@ -158,6 +156,7 @@ class Ball:
             
                 # Find point of reflection and set ball to reflection position
                 self.reflect_pos = self.previous_pos.move(self.velocity * self.consumed_vector)
-                self.rect.move_ip(self.reflect_pos[0:2])
+                self.rect.topleft = self.reflect_pos[0:2]
+                #self.rect.move_ip(self.reflect_pos[0:2])
                 self.velocity.reflect_ip(self.velocity)
         
