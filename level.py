@@ -2,7 +2,7 @@
 
 import pygame
 from pygame.locals import *
-from transition_classes import Wall
+from wall import Wall
 from brick import Brick
 from gameobject import Paddle
 from gameobject import Spike

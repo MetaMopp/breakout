@@ -42,7 +42,7 @@ class Gamestate:
         Level 50, 7    # 8    Level 51, 8          # 9
         Level 52, 9    # 10   Level 53, "bonus_3"  # 11
         Level 54, 10   # 12'''
-        self.current_level_index = 2
+        self.current_level_index = 10
         self.current_level = self.levels[self.current_level_index]        
         self.status_quo = StatusQuo() 
         self.you_won = YouWon() 
@@ -117,7 +117,6 @@ class Game:
             self.obstacle.append(obstacle)
             for brick in obstacle.bricks:
                 self.all_bricks.append(brick)
-        print("game 120: all bricks: ",self.all_bricks)
 
         self.spikes = self.gamestate.current_level.get_spikes()
         self.coins = self.gamestate.current_level.get_coins()
@@ -135,7 +134,7 @@ class Game:
             self.paddle.update(size[0], events)
             self.ball.update(size, self.paddle, self.all_bricks, events, self.gamestate) 
 
-            # clear bricks
+            # clear complete list of bricks  and post CLEAR LEVEL event
             for brick in self.all_bricks:
                 brick.update(size)
                 print("game 141: len all_bricks: ", len(self.all_bricks))
@@ -143,21 +142,6 @@ class Game:
                     if len(self.spikes) != 0:
                         self.spikes.clear()
                     Events.post_clear_level()
-
-            # clear bricks/walls and post CLEAR LEVEl event
-            '''clear_walls = 0
-            for wall in self.walls:
-                wall.update(size) 
-                if wall.bricks == []:
-                    clear_walls += 1
-                if ((clear_walls > 0 and clear_walls == len(self.walls))) and (self.coins == []):
-                    if len(self.spikes) != 0:
-                        self.spikes.clear()
-                    Events.post_clear_level()
-
-            # update obstacle wall
-            for obstacle in self.obstacles:
-                obstacle.update_obstacle(self.ball, size)'''
 
             # update spikes
             for spike in self.spikes:
@@ -181,11 +165,6 @@ class Game:
 
             for brick in self.all_bricks:
                 brick.draw(screen)
-            #for wall in self.walls:
-                #wall.draw(screen)
-
-            #for obstacle in self.obstacles:
-                #obstacle.draw(screen)
 
             for spike in self.spikes:
                 spike.draw(screen)
