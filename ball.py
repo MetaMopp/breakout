@@ -20,12 +20,10 @@ class Ball:
         self.normal = pygame.Vector2(0,0)
         self.velocity = pygame.Vector2(0,0)
 
-
     def draw(self, screen):
         screen.blit(self.ball_img, self.rect)
 
-
-    def update(self, size, paddle, all_bricks, events, gamestate):
+    def update(self, size, paddle, all_bricks, events, gamestate, coin):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and self.velocity.xy == (0,0):
@@ -55,8 +53,13 @@ class Ball:
                 Events.post_clear_level()
         else:
             if self.rect.bottom > size[1] + 35:
-                Events.post_live_lost()            
-
+                Events.post_live_lost()
+        
+        if self.rect.collidelist(coin.coins) >= 0: # returns -1 if there is no collision    
+            hit_index = self.rect.collidelist(coin.coins) # gives index interger
+            # call process_hit to tell coin that it was hit 
+            coin.process_hit(hit_index)
+            
         # collision detection with paddle
         if self.rect.colliderect(paddle):
             Sounds.touch_paddle.play()
@@ -70,8 +73,7 @@ class Ball:
 
         ### TO DO: Collision detection with bricks ###
         #print("Ball 72 object list all_bricks", all_bricks)
-        print("Ball 73 lenght all_bricks: ", len(all_bricks))
-
+        #print("Ball 73 lenght all_bricks: ", len(all_bricks))
         # Returns list of all indices containing rects that collide with the Rect. If no intersecting rectangles are found: empty list
         collision_list = self.rect.collidelistall(all_bricks) 
         if len(collision_list) >= 1:
@@ -98,59 +100,62 @@ class Ball:
             # call process_hit method
             hit_brick.process_hit(hit_brick, all_bricks, gamestate)
 
-        # DETECT BALL'S DIRECTION AND ON WHICH AXIS IT HITS THE BRICK; CALC CONSUMED VECTOR
-
-            # 1 diagonal: from bottomleft to topright
-            if self.velocity[0] < 0 and self.velocity[1] < 0:
-                self.start = self.previous_pos.topleft
-                # check axis and calc actual vector consumption
-                if hit_y:
-                    self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y
-                else:
-                    self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x
-
-            # 2 diagonal: from bottomright to top right
-            elif self.velocity[0] > 0 and self.velocity[1] < 0:
-                self.start = self.previous_pos.topright
-                # check axis and calc actual vector consumption
-                if hit_y:
-                    self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y
-                else:
-                    self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x
-
-            # 3 diagonal: from topright to bottomright
-            elif self.velocity[0] < 0 and self.velocity[1] > 0:
-                self.start = self.previous_pos.bottomleft
-                # check axis and calc actual vector consumption
-                if hit_y :
-                    self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y
-                else:
-                    self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x
-
-            # 4 diagonal: from topleft to bottomleft
-            elif self.velocity[0] > 0 and self.velocity[1] > 0:
-                self.start = self.previous_pos.bottomright
-                # check axis and calc actual vector consumption
-                if hit_y:
-                    self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y
-                else:
-                    self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x
-
-            # 5 vertical: from top to bottom // CAN ONLY BE Y-AXIS
-            elif self.velocity[0] == 0 and self.velocity[1] > 0:
-                self.start = self.previous_pos.bottom
-                self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y
-            # 6 vertical from bottom to top
-            elif self.velocity[0] == 0 and self.velocity[1] < 0:
-                self.start = self.previous_pos.top
-                self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y
-
-            # horizontal: NOT allowed // no 90° X-Axis collison possible
-            elif (self.velocity[0] > 0 or self.velocity[1] < 0) and self.velocity[1] == 0:
+                # DETECT BALL'S DIRECTION AND ON WHICH AXIS IT HITS THE BRICK; CALC CONSUMED VECTOR
+            if self.velocity.xy == (0, 0):
+                print("self velocity: ", self.velocity)
                 pass
+            else:
+                # 1 diagonal: from bottomleft to topright
+                if self.velocity[0] < 0 and self.velocity[1] < 0:
+                    self.start = self.previous_pos.topleft
+                    # check axis and calc actual vector consumption
+                    if hit_y:
+                        self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
+                    else:
+                        self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
 
-            # Find point of reflection and set ball to reflection position
-            self.reflect_pos = self.previous_pos.move(self.velocity * self.consumed_vector)
-            self.rect.move_ip(self.reflect_pos[0:2])
-            self.velocity.reflect_ip(self.velocity)
+                # 2 diagonal: from bottomright to top right
+                elif self.velocity[0] > 0 and self.velocity[1] < 0:
+                    self.start = self.previous_pos.topright
+                    # check axis and calc actual vector consumption
+                    if hit_y:
+                        self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
+                    else:
+                        self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x 
+
+                # 3 diagonal: from topright to bottomright
+                elif self.velocity[0] < 0 and self.velocity[1] > 0:
+                    self.start = self.previous_pos.bottomleft
+                    # check axis and calc actual vector consumption
+                    if hit_y :
+                        self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
+                    else:
+                        self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
+
+                # 4 diagonal: from topleft to bottomleft
+                elif self.velocity[0] > 0 and self.velocity[1] > 0:
+                    self.start = self.previous_pos.bottomright
+                    # check axis and calc actual vector consumption
+                    if hit_y:
+                        self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
+                    else:
+                        self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x
+
+                # 5 vertical: from top to bottom // CAN ONLY BE Y-AXIS
+                elif self.velocity[0] == 0 and self.velocity[1] > 0:
+                    self.start = self.previous_pos.bottom
+                    self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y + 0.1
+                # 6 vertical from bottom to top
+                elif self.velocity[0] == 0 and self.velocity[1] < 0:
+                    self.start = self.previous_pos.top
+                    self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y
+
+                # horizontal: NOT allowed // no 90° X-Axis collison possible
+                elif (self.velocity[0] > 0 or self.velocity[1] < 0) and self.velocity[1] == 0:
+                    pass
+            
+                # Find point of reflection and set ball to reflection position
+                self.reflect_pos = self.previous_pos.move(self.velocity * self.consumed_vector)
+                self.rect.move_ip(self.reflect_pos[0:2])
+                self.velocity.reflect_ip(self.velocity)
         
