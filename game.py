@@ -117,7 +117,7 @@ class Game:
             self.obstacle.append(obstacle)
             for brick in obstacle.bricks:
                 self.all_bricks.append(brick)
-        print("all bricks: ",len(self.all_bricks))
+        print("game 120: all bricks: ",self.all_bricks)
 
         self.spikes = self.gamestate.current_level.get_spikes()
         self.coins = self.gamestate.current_level.get_coins()
@@ -138,7 +138,7 @@ class Game:
             # clear bricks
             for brick in self.all_bricks:
                 brick.update(size)
-                print("len all_bricks: ", len(self.all_bricks))
+                print("game 141: len all_bricks: ", len(self.all_bricks))
                 if (len(self.all_bricks) == self.n_bricks) and (self.coins == []):
                     if len(self.spikes) != 0:
                         self.spikes.clear()
@@ -179,11 +179,13 @@ class Game:
             for coin in self.coins:
                 coin.draw(screen)
 
-            for wall in self.walls:
-                wall.draw(screen)
+            for brick in self.all_bricks:
+                brick.draw(screen)
+            #for wall in self.walls:
+                #wall.draw(screen)
 
-            for obstacle in self.obstacles:
-                obstacle.draw(screen)
+            #for obstacle in self.obstacles:
+                #obstacle.draw(screen)
 
             for spike in self.spikes:
                 spike.draw(screen)
