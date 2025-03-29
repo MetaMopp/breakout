@@ -23,7 +23,7 @@ class Ball:
     def draw(self, screen):
         screen.blit(self.ball_img, self.rect)
 
-    def update(self, size, paddle, all_bricks, events, gamestate, coin):
+    def update(self, size, paddle, all_bricks, events, gamestate, coins):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and self.velocity.xy == (0,0):
@@ -54,11 +54,13 @@ class Ball:
         else:
             if self.rect.bottom > size[1] + 35:
                 Events.post_live_lost()
-        
-        if self.rect.collidelist(coin.coins) >= 0: # returns -1 if there is no collision    
-            hit_index = self.rect.collidelist(coin.coins) # gives index interger
-            # call process_hit to tell coin that it was hit 
-            coin.process_hit(hit_index)
+
+        if len(coins) > 0:
+            coin = coins[0]
+            if self.rect.collidelist(coin.coins) >= 0: # returns -1 if there is no collision    
+                hit_index = self.rect.collidelist(coin.coins) # gives index interger
+                # call process_hit to tell coin that it was hit 
+                coin.process_hit(hit_index)
             
         # collision detection with paddle
         if self.rect.colliderect(paddle):

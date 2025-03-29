@@ -119,7 +119,6 @@ class Game:
         
         self.spikes = self.gamestate.current_level.get_spikes()
         self.coins = self.gamestate.current_level.get_coins()
-        print(self.coins)
         self.paddle = self.gamestate.current_level.get_paddle(size)
         self.ball = Ball(size)
                    
@@ -132,7 +131,7 @@ class Game:
             # UPDATE GAMEOBJECTS 
             self.gamestate.status_quo.update(self.gamestate.lives, self.gamestate.stopwatch, self.gamestate.brick_score)
             self.paddle.update(size[0], events)
-            self.ball.update(size, self.paddle, self.all_bricks, events, self.gamestate, self.coins[0]) 
+            self.ball.update(size, self.paddle, self.all_bricks, events, self.gamestate, self.coins) 
 
             # clear complete list of bricks  and post CLEAR LEVEL event
             for brick in self.all_bricks:
