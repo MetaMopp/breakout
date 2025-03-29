@@ -2,8 +2,8 @@
 
 import pygame
 from pygame.locals import *
-from transition_classes import Brick, Wall
-#from gameobject import Brick
+from transition_classes import Wall
+from brick import Brick
 from gameobject import Paddle
 from gameobject import Spike
 from gameobject import Coin 
