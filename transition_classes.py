@@ -44,7 +44,7 @@ from breakout_sounds import Sounds
         if self.rect.bottom > size[1]:
             Events.post_live_lost()''' 
 
-                   
+                 
 
 class Wall: 
     def __init__(self, width, hight, column, row, vgap, hgap, dis_left):
@@ -58,7 +58,7 @@ class Wall:
         
         #self.dis_top = dis_top -> currently: DISTANCETOP in pattern-method
         self.bricks =[] # list of bricks
-        self.hit_bricks = []
+        #self.hit_bricks = []
 
     ### WALL PATTTERNS ###
     def pattern(self, name, color, hit_type, velocity):

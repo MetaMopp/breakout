@@ -218,7 +218,7 @@ class Level:
         self.spikes_p = spikes_p
         self.coins_p = coins_p
         self.paddle_p = paddle_p
-    
+        
     # iterate over the paramters and return the object
     def get_walls(self):     
         walls = []
@@ -232,12 +232,14 @@ class Level:
     
     def get_obstacles(self):
         obstacles = []
+        n_bricks = 0
         for p in self.obstacles_p:
             obstacle = Wall(p[3], p[4], p[5], p[6], p[7], p[8], p[9])
             #obstacle = Brick(p[0], p[1], p[2], p[3])
             obstacle.build_obstacle(p[10], p[0], p[1], p[2])
             obstacles.append(obstacle)
-        return obstacles
+            n_bricks += len(obstacle.bricks)
+        return obstacles, n_bricks
     
     def get_spikes(self):
         spikes = []
