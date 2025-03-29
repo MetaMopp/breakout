@@ -69,14 +69,16 @@ class Ball:
                 self.velocity.xy - self.velocity.xy
 
         ### TO DO: Collision detection with bricks ###
-    
+        #print("Ball 72 object list all_bricks", all_bricks)
+        print("Ball 73 lenght all_bricks: ", len(all_bricks))
+
         # Returns list of all indices containing rects that collide with the Rect. If no intersecting rectangles are found: empty list
-        collision_list = self.rect.collidelistall(wall.bricks) 
+        collision_list = self.rect.collidelistall(all_bricks) 
         if len(collision_list) >= 1:
             nearest = None 
             # calculate the collision with the shortest distance
             for i in collision_list:
-                listed_brick = wall.bricks[i]
+                listed_brick = all_bricks[i]
                 distance = (listed_brick.rect.centerx - self.rect.centerx)**2 + (listed_brick.rect.centery - self.rect.centery)**2 
                 # first iteration: set the nearest distance to the first distance that was calculated and set current indix as [0] in collision list
                 if nearest == None:
@@ -88,13 +90,13 @@ class Ball:
                     collision_list[0] = i
                 
             # set the nearest colliding brick to hit_brick
-            hit_brick = wall.bricks[collision_list[0]]
+            hit_brick = all_bricks[collision_list[0]]
             # collision on X or Y-Axis?
             intersection = self.rect.clip(hit_brick)
             hit_y = intersection[2] > intersection[3]
 
             # call process_hit method
-            hit_brick.process_hit(hit_brick, wall, gamestate)
+            hit_brick.process_hit(hit_brick, all_bricks, gamestate)
 
         # DETECT BALL'S DIRECTION AND ON WHICH AXIS IT HITS THE BRICK; CALC CONSUMED VECTOR
 

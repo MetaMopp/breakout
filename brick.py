@@ -15,7 +15,7 @@ class Brick:
         self.rect = pygame.FRect(x, y, width, hight)
         self.hit_count = 0
 
-    def process_hit(self, hit_brick, wall, gamestate):
+    def process_hit(self, hit_brick, all_bricks, gamestate):
         # function is called in Ball.update when a brick was hit
         self.hit = hit_brick
         if self.hit_type == 0: # obstacle-type -> do not remove
@@ -27,7 +27,7 @@ class Brick:
             if self.hit_type <= self.hit_count: # if type is 1 -> remove from list
                 Sounds.spike_sound.stop()
                 Sounds.destroy_brick.play()
-                wall.bricks.remove(self.hit)
+                all_bricks.remove(self.hit)
                 gamestate.brick_score += 1  
             else:
                 Sounds.spike_sound.stop()
