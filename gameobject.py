@@ -16,10 +16,8 @@ class Paddle:
         self.color = pygame.Color(0, 255, 0)
         self.dir = {K_LEFT: (-1, 0), K_RIGHT: (1, 0)}
        
-
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect, 4, border_radius=3)
-
 
     def update(self, screen_width, events):  
         for event in events:
@@ -41,12 +39,10 @@ class Spike:
         self.velocity = pygame.Vector2(0,0)
         self.ran_num = random.randint(0, 1300)
         self.clip_list = []
-        
-                    
+                     
     def draw(self, screen):
         pygame.draw.polygon(screen, self.color, self.points)
         
-
     def update(self, paddle, gamestate):
         self.velocity.xy = 0, 3
         if gamestate.spike_count < self.ran_num:
@@ -123,21 +119,18 @@ class Coin:
                     x = self.dis_left + row * (self.width + self.hgap)
                     self.coin_rect = pygame.FRect(x, y, self.width, self.hight)
                     self.coins.append(self.coin_rect) 
-
+    
+    def process_hit(self, hit_index):
+        Sounds.coin_sound.play()
+        self.hit = hit_index
+        self.coins.remove(self.coins[self.hit])
+        Events.post_increase_coin_score()
 
     def draw(self, screen):
         for self.coin_rect in self.coins:
             pygame.draw.circle(screen, self.color, (self.coin_rect.centerx+10, self.coin_rect.centery+10), 10)
 
-
-    def update(self, ball, gamestate):
-        if ball.rect.collidelist(self.coins) >= 0: # returns -1 if there is no collision    
-            hit = ball.rect.collidelist(self.coins)
-            Sounds.coin_sound.play()
-            self.coins.remove(self.coins[hit])
-            Events.post_increase_coin_score()
-            
-
+    def update(self, gamestate):            
         if gamestate.current_level.name == "bonus_2" or gamestate.current_level.name == "bonus_3":
             if gamestate.current_level.name == "bonus_2":
                 self.velocity.y = 0.03

@@ -42,7 +42,7 @@ class Gamestate:
         Level 50, 7    # 8    Level 51, 8          # 9
         Level 52, 9    # 10   Level 53, "bonus_3"  # 11
         Level 54, 10   # 12'''
-        self.current_level_index = 10
+        self.current_level_index = 3
         self.current_level = self.levels[self.current_level_index]        
         self.status_quo = StatusQuo() 
         self.you_won = YouWon() 
@@ -104,7 +104,6 @@ class Game:
     def game_level(self, size):
         self.walls = self.gamestate.current_level.get_walls()
         self.obstacles, self.n_bricks = self.gamestate.current_level.get_obstacles()
-
         # loop through all lists and create single list with all bricks
         self.wall = []
         self.obstacle = []
@@ -117,9 +116,10 @@ class Game:
             self.obstacle.append(obstacle)
             for brick in obstacle.bricks:
                 self.all_bricks.append(brick)
-
+        
         self.spikes = self.gamestate.current_level.get_spikes()
         self.coins = self.gamestate.current_level.get_coins()
+        print(self.coins)
         self.paddle = self.gamestate.current_level.get_paddle(size)
         self.ball = Ball(size)
                    
@@ -132,12 +132,12 @@ class Game:
             # UPDATE GAMEOBJECTS 
             self.gamestate.status_quo.update(self.gamestate.lives, self.gamestate.stopwatch, self.gamestate.brick_score)
             self.paddle.update(size[0], events)
-            self.ball.update(size, self.paddle, self.all_bricks, events, self.gamestate) 
+            self.ball.update(size, self.paddle, self.all_bricks, events, self.gamestate, self.coins[0]) 
 
             # clear complete list of bricks  and post CLEAR LEVEL event
             for brick in self.all_bricks:
                 brick.update(size)
-                print("game 141: len all_bricks: ", len(self.all_bricks))
+                #print("game 141: len all_bricks: ", len(self.all_bricks))
                 if (len(self.all_bricks) == self.n_bricks) and (self.coins == []):
                     if len(self.spikes) != 0:
                         self.spikes.clear()
@@ -150,7 +150,7 @@ class Game:
             # update coins and clear list of coins       
             clear_coins = 0
             for coin in self.coins:
-                coin.update(self.ball, self.gamestate)
+                coin.update(self.gamestate)
                 if coin.coins == []:
                     clear_coins += 1
                     self.coins.clear()                                                              
