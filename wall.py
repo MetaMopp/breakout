@@ -1,51 +1,9 @@
-
 import pygame
 from pygame.locals import *
 from pygame.math import Vector2
 from brick import Brick
-from events import Events
-from breakout_sounds import Sounds  
 
-# define class for object bricks
-'''class Brick:
-    def __init__(self, color, hit_type, velocity, x, y, width, hight):
-        self.color = color
-        self.hit_type = hit_type
-        self.velocity = pygame.Vector2(velocity)
-        self.rect = pygame.FRect(x, y, width, hight)
-        self.hit_count = 0
-
-    def process_hit(self, hit_brick, wall, gamestate):
-        # hit brick?
-        self.hit = hit_brick
-        if self.hit_type == 0:
-            Sounds.spike_sound.stop() # returns -1 if there is no collision
-            Sounds.obstacle_clash.play()
-            pass
-        else:
-            self.hit_count += 1
-            if self.hit_type <= self.hit_count:
-                Sounds.spike_sound.stop()
-                Sounds.destroy_brick.play()
-                wall.bricks.remove(self.hit)
-                gamestate.brick_score += 1  
-            else:
-                Sounds.spike_sound.stop()
-                Sounds.touch_brick.play()
-                wall.hit_bricks.append(self.hit)
-        
-    def draw(self, screen):
-         pygame.draw.rect(screen, self.color, self.rect, border_radius=5)
-
-    def update(self, size):
-        self.rect[0] += self.velocity.x
-        self.rect[1] += self.velocity.y
-
-        if self.rect.bottom > size[1]:
-            Events.post_live_lost()''' 
-
-                 
-
+# define a class wall, consisting of bricks
 class Wall: 
     def __init__(self, width, hight, column, row, vgap, hgap, dis_left):
         self.width = width
@@ -192,39 +150,3 @@ class Wall:
                     x = self.dis_left + row * (self.width + self.hgap)
                     self.bricks.append(Brick(color, hit_type, velocity, x, y, self.width, self.hight))
                                
-    '''# tell brick to draw itself
-    def draw(self, screen):
-        for brick in self.bricks:
-                brick.draw(screen)
-
-    # update wall
-    def update(self, size): # detect collision with wall, remove bricks
-
-        for brick in self.bricks:
-            brick.update(size)
-   
-    # update bricks that are obstacles
-    def update_obstacle(self, ball, size):
-
-        for brick in self.bricks:
-            brick.update(size)
-        #detect collision and change ball direction
-        if ball.rect.collidelist(self.bricks) >= 0:
-            Sounds.spike_sound.stop() # returns -1 if there is no collision
-            Sounds.obstacle_clash.play()
-            hit = ball.rect.collidelist(self.bricks)
-            hit_brick = self.bricks[hit]
-            intersection = ball.rect.clip(hit_brick) 
-            if intersection[2] > intersection[3]:
-                ball.velocity[1] *= -1
-                if ball.velocity[1] == 0:
-                    print("is 0")
-                if ball.velocity[1] != 0:
-                    ball.rect[1] += ball.velocity[1] / abs(ball.velocity[1]) # push to avoid double collision
-            if intersection[2] < intersection[3]:
-                ball.velocity[0] *= -1
-                if ball.velocity[0] == 0:
-                    print("is 0")
-                if ball.velocity[0] != 0:
-                    ball.rect[0] += ball.velocity[0] / abs(ball.velocity[0]) # push to avoid double collision'''
-
