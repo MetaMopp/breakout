@@ -2,11 +2,12 @@
 import pygame
 from pygame.locals import *
 from pygame.math import Vector2
+from brick import Brick
 from events import Events
 from breakout_sounds import Sounds  
 
 # define class for object bricks
-class Brick:
+'''class Brick:
     def __init__(self, color, hit_type, velocity, x, y, width, hight):
         self.color = color
         self.hit_type = hit_type
@@ -17,16 +18,21 @@ class Brick:
     def process_hit(self, hit_brick, wall, gamestate):
         # hit brick?
         self.hit = hit_brick
-        self.hit_count += 1
-        if self.hit_type <= self.hit_count:
-            Sounds.spike_sound.stop()
-            Sounds.destroy_brick.play()
-            wall.bricks.remove(self.hit)
-            gamestate.brick_score += 1  
+        if self.hit_type == 0:
+            Sounds.spike_sound.stop() # returns -1 if there is no collision
+            Sounds.obstacle_clash.play()
+            pass
         else:
-            Sounds.spike_sound.stop()
-            Sounds.touch_brick.play()
-            wall.hit_bricks.append(self.hit)
+            self.hit_count += 1
+            if self.hit_type <= self.hit_count:
+                Sounds.spike_sound.stop()
+                Sounds.destroy_brick.play()
+                wall.bricks.remove(self.hit)
+                gamestate.brick_score += 1  
+            else:
+                Sounds.spike_sound.stop()
+                Sounds.touch_brick.play()
+                wall.hit_bricks.append(self.hit)
         
     def draw(self, screen):
          pygame.draw.rect(screen, self.color, self.rect, border_radius=5)
@@ -36,7 +42,7 @@ class Brick:
         self.rect[1] += self.velocity.y
 
         if self.rect.bottom > size[1]:
-            Events.post_live_lost()  
+            Events.post_live_lost()''' 
 
                    
 
