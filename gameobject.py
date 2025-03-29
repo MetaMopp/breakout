@@ -92,15 +92,9 @@ class Ball:
             # collision on X or Y-Axis?
             intersection = self.rect.clip(hit_brick)
             hit_y = intersection[2] > intersection[3]
-            
-            '''if intersection[2] > intersection[3]:
-                # collision on y-axis
-                hit_y = True
-                hit_x = False
-            elif intersection[3] < intersection[2]:
-                # collision on x-axis 
-                hit_x = True   
-                hit_y = False'''
+
+            # call process_hit method
+            hit_brick.process_hit(hit_brick, wall, gamestate)
 
         # DETECT BALL'S DIRECTION AND ON WHICH AXIS IT HITS THE BRICK; CALC CONSUMED VECTOR
 
