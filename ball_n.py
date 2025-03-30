@@ -116,7 +116,7 @@ class Ball:
                         #self.normal.normalize_ip()
                     else:
                         self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
-                        self.normal.xy = -1, 0
+                        self.normal.xy = 1, 0
                         #self.normal.normalize_ip()
 
                 # 2 diagonal: from bottomleft to top right
