@@ -99,6 +99,7 @@ class Setup:
             # DISPLAY MODE
             pygame.display.update()
             self.clock.tick(60)
+            #print("end of frame")
 
             # COUNTER
             # countdown level screen visible in frames
