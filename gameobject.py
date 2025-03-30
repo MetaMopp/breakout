@@ -23,8 +23,8 @@ class Paddle:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key in self.dir:
-                    p_velocity = self.dir[event.key]  
-                    self.rect.move_ip(p_velocity)
+                    self.velocity = self.dir[event.key]  
+                    self.rect.move_ip(self.velocity)
                     if self.rect.left < 0:
                         self.rect[0] = 0
                     elif self.rect.right > screen_width:
