@@ -23,7 +23,7 @@ class Ball:
     def draw(self, screen):
         screen.blit(self.ball_img, self.rect)
 
-    def update(self, size, paddle, all_bricks, events, gamestate, coins):
+    def update(self, size, paddle, all_bricks, events, gamestate, coins, unused_vector):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and self.velocity.xy == (0,0):
@@ -32,9 +32,8 @@ class Ball:
 
         # save position for later access
         self.previous_pos = pygame.FRect(self.rect)   
-        #print("ball, 35: previous_pos: ", self.previous_pos)
         # collision detection with window boundary     
-        self.rect.move_ip(self.velocity)   
+        self.rect.move_ip(self.velocity * unused_vector)   
         if self.rect.left < 0:
             Sounds.wall_sound.play()
             self.rect.left = 0
@@ -69,8 +68,8 @@ class Ball:
             self.normal.xy = distance, -1
             self.normal.normalize_ip()
             self.velocity.reflect_ip(self.normal)
-            if abs(self.velocity.y) < 30:
-                self.velocity.xy - self.velocity.xy
+            if abs(self.velocity.y) < (0.25 * self.velocity.length()):
+                self.velocity.xy = self.velocity.xy
 
         ### TO DO: Collision detection with bricks ###
        
@@ -184,18 +183,15 @@ class Ball:
                 # Find point of reflection and set ball to reflection position
                 self.reflect_pos = self.previous_pos.move(self.velocity * self.consumed_vector)
                 self.rect.topleft = self.reflect_pos[0:2]
-                #if self.consumed_vector < 1:
-                print("topleft 194 : ", self.rect.topleft)
-                print("ball, 195: consumed vector: ",self.consumed_vector)
+                #print("ball, 187: consumed vector: ",self.consumed_vector)
                 self.velocity.reflect_ip(self.normal)
-                print("ball 197: self.normal " ,self.normal)
-                print("ball, 198: self velocity: ", self.velocity)
-                self.unused_vector = (1 - self.consumed_vector)
-                print("ball, 200, unused vector: ", self.unused_vector)
-                self.available_velocity = self.velocity * self.unused_vector
-                print("ball, 202: available_velocity: ", self.available_velocity)
-                self.test = self.velocity - self.available_velocity
-                print("ball, 204: self.test: ", self.test)
+                print("ball, 188: self.consumend_vektor: ",self.consumed_vector)
+                unused_vector -= self.consumed_vector
+                print("ball, 190, unused vector: ", unused_vector)
+                self.available_velocity = self.velocity * unused_vector
+                print("ball, 192: available_velocity: ", self.available_velocity)
                 self.end_pos = self.rect.topleft + self.available_velocity # ball would end here when it could have used his full velocity
-                print("ball, 206 end pos?: ", self.end_pos)
+                if unused_vector > 0.01:
+                    self.update(size, paddle, all_bricks, events, gamestate, coins, unused_vector)
+
                 

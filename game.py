@@ -131,7 +131,7 @@ class Game:
             # UPDATE GAMEOBJECTS 
             self.gamestate.status_quo.update(self.gamestate.lives, self.gamestate.stopwatch, self.gamestate.brick_score)
             self.paddle.update(size[0], events)
-            self.ball.update(size, self.paddle, self.all_bricks, events, self.gamestate, self.coins) 
+            self.ball.update(size, self.paddle, self.all_bricks, events, self.gamestate, self.coins, 1) 
 
             # clear complete list of bricks  and post CLEAR LEVEL event
             for brick in self.all_bricks:
