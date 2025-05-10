@@ -79,8 +79,10 @@ class Ball:
             nearest = None 
             # calculate the collision with the shortest distance
             for i in collision_list:
+                print("ball, 83: listed_brick as index: ", i)
                 listed_brick = all_bricks[i]
                 distance = (listed_brick.rect.centerx - self.rect.centerx)**2 + (listed_brick.rect.centery - self.rect.centery)**2 
+                print("ball, 85: distance listed_brick: ", distance)
                 # first iteration: set the nearest distance to the first distance that was calculated and set current indix as [0] in collision list
                 if nearest == None:
                     nearest = distance
@@ -90,6 +92,7 @@ class Ball:
                     nearest = distance
                     collision_list[0] = i
                 
+            print("ball, 95: choosen listed brick in collision list: ", collision_list[0])
             # set the nearest colliding brick to hit_brick
             hit_brick = all_bricks[collision_list[0]]
             # collision on X or Y-Axis? 
@@ -107,41 +110,39 @@ class Ball:
                 if self.velocity[0] < 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.topleft
                     print("scenario #1")
-                    print(self.start)
                     # check axis and calc actual vector consumption
                     if hit_y:
                         self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
                         self.normal.xy = 0, 1
-                        #self.normal.normalize_ip()
+                        print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
                         self.normal.xy = -1, 0
-                        #self.normal.normalize_ip()
 
                 # 2 diagonal: from bottomleft to top right
                 elif self.velocity[0] > 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.topright
                     print("scenario #2")
-                    print(self.start)
+                    
                     # check axis and calc actual vector consumption
                     if hit_y:
                         self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
                         self.normal.xy = 0, 1
-                        #self.normal.normalize_ip()
+                        print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x 
                         self.normal.xy = -1, 0
-                        #self.normal.normalize_ip()
 
                 # 3 diagonal: from topleft to bottomright
                 elif self.velocity[0] < 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottomleft
                     print("scenario #3")
-                    print(self.start)
+                    
                     # check axis and calc actual vector consumption
                     if hit_y :
                         self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                         self.normal.xy = 0, -1
+                        print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
                         self.normal.xy = 1, 0
@@ -150,11 +151,11 @@ class Ball:
                 elif self.velocity[0] > 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottomright
                     print("scenario #4")
-                    print(self.start)
                     # check axis and calc actual vector consumption
                     if hit_y:
                         self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                         self.normal.xy = 0, -1
+                        print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x
                         self.normal.xy = -1, 0
@@ -163,33 +164,32 @@ class Ball:
                 elif self.velocity[0] == 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottom
                     print("scenario #5")
-                    print(self.start)
-                    self.consumed_vector = (hit_brick.rect.top - self.previous_pos.buttom) / self.velocity.y 
+                    self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                     self.normal.xy = 0, -1
+                    print("hit_y")
+
                 # 6 vertical from bottom to top
                 elif self.velocity[0] == 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.top
                     print("scenario #6")
-                    print(self.start)
+                    print("hit_y")
                     self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y
                     self.normal.xy = 0, 1
 
                 # horizontal: NOT allowed // no 90° X-Axis collison possible
                 elif (self.velocity[0] > 0 or self.velocity[1] < 0) and self.velocity[1] == 0:
                     print("scenario #7")
-                    print(self.start)
                     pass
                 
                 # Find point of reflection and set ball to reflection position
                 self.reflect_pos = self.previous_pos.move(self.velocity * self.consumed_vector)
                 self.rect.topleft = self.reflect_pos[0:2]
-                #print("ball, 187: consumed vector: ",self.consumed_vector)
                 self.velocity.reflect_ip(self.normal)
                 print("ball, 188: self.consumend_vektor: ",self.consumed_vector)
                 unused_vector -= self.consumed_vector
                 print("ball, 190, unused vector: ", unused_vector)
+                print()
                 self.available_velocity = self.velocity * unused_vector
-                print("ball, 192: available_velocity: ", self.available_velocity)
                 self.end_pos = self.rect.topleft + self.available_velocity # ball would end here when it could have used his full velocity
                 if unused_vector > 0.01:
                     self.update(size, paddle, all_bricks, events, gamestate, coins, unused_vector)
