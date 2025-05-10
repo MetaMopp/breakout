@@ -94,6 +94,10 @@ class Ball:
             # set the nearest colliding brick to hit_brick
             hit_brick = all_bricks[collision_list[0]]
             # collision on X or Y-Axis? 
+            # # # REFRACT: new code : line intersection hit brick 
+            ### does vector self.previous_pos + self.rect intersect with any line?
+            ### nearest line from self.previos.pos. -> first intercsection -> pythogoras (without square)
+            ### if left/rigth -> hit_y
             intersection = self.rect.clip(hit_brick)
             hit_y = intersection[2] > intersection[3]
 
