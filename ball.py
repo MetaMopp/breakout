@@ -25,6 +25,27 @@ class Ball:
     def draw(self, screen):
         screen.blit(self.ball_img, self.rect)
 
+    # this method is needed and called in the update-method to find the hit_brick's side of collision
+    def find_horizontal_hit(self, hit_brick):
+        hit_horizontal = 0
+        line = self.start + self.end
+        clipped_line = list(hit_brick.rect.clipline(line))
+        if clipped_line != []:
+            point_1 = clipped_line[0]
+            point_2 = clipped_line[1]
+            dis_point_1 = (point_1[0] - self.start[0])**2 + (point_1[1] - self.start[1])**2
+            dis_point_2 = (point_2[0] - self.start[0])**2 + (point_2[1] - self.start[1])**2
+            # smallest distance from clipped_line start-/endpoint = (first) intersection
+            if dis_point_1 < dis_point_2:
+                intersection = point_1
+            else:
+                intersection = point_2
+        
+            if intersection[1] == hit_brick.rect.bottom or intersection[1] == hit_brick.rect.top:
+                hit_horizontal = True
+        return hit_horizontal
+
+
     def update(self, size, paddle, all_bricks, events, gamestate, coins, unused_vector):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -81,10 +102,8 @@ class Ball:
             nearest = None 
             # calculate the collision with the shortest distance
             for i in collision_list:
-                #print("ball, 83: listed_brick as index: ", i)
                 listed_brick = all_bricks[i]
                 distance = (listed_brick.rect.centerx - self.rect.centerx)**2 + (listed_brick.rect.centery - self.rect.centery)**2 
-                #print("ball, 85: distance listed_brick: ", distance)
                 # first iteration: set the nearest distance to the first distance that was calculated and set current indix as [0] in collision list
                 if nearest == None:
                     nearest = distance
@@ -94,29 +113,26 @@ class Ball:
                     nearest = distance
                     collision_list[0] = i
                 
-            #print("ball, 95: choosen listed brick in collision list: ", collision_list[0])
+            
             # set the nearest colliding brick to hit_brick
             hit_brick = all_bricks[collision_list[0]]
-            # collision on X or Y-Axis? 
-            # # # REFRACT: new code : line intersection hit brick 
-            # clipline(x1, y1, x2, y2) -> ((cx1, cy1), (cx2, cy2))
-            ### does vector self.previous_pos + self.rect intersect with any line?
-            ### nearest line from self.previos.pos. -> first intercsection -> pythogoras (without square)
-            ### if left/rigth -> hit_y
-            intersection_old = self.rect.clip(hit_brick)
-            hit_y = intersection_old[2] > intersection_old[3]
+           
+            #intersection_old = self.rect.clip(hit_brick)
+            #hit_y = intersection_old[2] > intersection_old[3]
 
             # call process_hit method
             hit_brick.process_hit(hit_brick, all_bricks, gamestate)
 
-                # DETECT BALL'S DIRECTION AND ON WHICH AXIS IT HITS THE BRICK; CALC CONSUMED VECTOR
+            # DETECT BALL'S DIRECTION AND ON WHICH AXIS IT HITS THE BRICK; CALC CONSUMED VECTOR
             if self.velocity.xy == (0, 0):
                 pass
             else:
                 # 1 diagonal: from bottomright to topleft
                 if self.velocity[0] < 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.topleft
-                    line = self.previous_pos.topleft + self.rect.topleft
+                    self.end = self.rect.topleft
+                    hit_horizontal = self.find_horizontal_hit(self, hit_brick)
+                    '''line = self.previous_pos.topleft + self.rect.topleft
                     clipped_line = list(hit_brick.rect.clipline(line))
                     if clipped_line != []:
                         point_1 = clipped_line[0]
@@ -131,14 +147,11 @@ class Ball:
                             intersection = point_2
                         print("nearest:" , intersection)
                         if intersection[0] == hit_brick.rect.right:
-                            hit_y
-
-                    #print("scenario #1")
+                            hit_y'''
                     # check axis and calc actual vector consumption
-                    if hit_y:
+                    if hit_horizontal:
                         self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
-                        self.normal.xy = 0, 1
-                        #print("hit_y")
+                        self.normal.xy = 0, 1   
                     else:
                         self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
                         self.normal.xy = -1, 0
@@ -146,13 +159,12 @@ class Ball:
                 # 2 diagonal: from bottomleft to top right
                 elif self.velocity[0] > 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.topright
-                    #print("scenario #2")
-                    
+                    self.end = self.rect.topright
+                    hit_horizontal = self.find_horizontal_hit(self, hit_brick)
                     # check axis and calc actual vector consumption
-                    if hit_y:
+                    if hit_horizontal:
                         self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
                         self.normal.xy = 0, 1
-                        #print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x 
                         self.normal.xy = -1, 0
@@ -160,13 +172,12 @@ class Ball:
                 # 3 diagonal: from topleft to bottomright
                 elif self.velocity[0] < 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottomleft
-                    #print("scenario #3")
-                    
+                    self.end = self.rect.bottomleft
+                    hit_horizontal = self.find_horizontal_hit(self, hit_brick)
                     # check axis and calc actual vector consumption
-                    if hit_y :
+                    if hit_horizontal :
                         self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                         self.normal.xy = 0, -1
-                        #print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
                         self.normal.xy = 1, 0
@@ -174,45 +185,37 @@ class Ball:
                 # 4 diagonal: from topright to bottomleft
                 elif self.velocity[0] > 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottomright
-                    #print("scenario #4")
+                    self.end = self.rect.bottomright
+                    hit_horizontal = self.find_horizontal_hit(self, hit_brick)
                     # check axis and calc actual vector consumption
-                    if hit_y:
+                    if hit_horizontal:
                         self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                         self.normal.xy = 0, -1
-                        #print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x
                         self.normal.xy = -1, 0
 
-                # 5 vertical: from top to bottom // CAN ONLY BE Y-AXIS
+                # 5 vertical: from top to bottom // CAN ONLY BE BOTTOM/TOP HIT ON BRICK
                 elif self.velocity[0] == 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottom
-                    #print("scenario #5")
                     self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
-                    self.normal.xy = 0, -1
-                    #print("hit_y")
+                    self.normal.xy = 0, -1    
 
                 # 6 vertical from bottom to top
                 elif self.velocity[0] == 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.top
-                    #print("scenario #6")
-                    #print("hit_y")
                     self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y
                     self.normal.xy = 0, 1
 
-                # horizontal: NOT allowed // no 90° X-Axis collison possible
+                # horizontal: NOT allowed // no 90° left/right collison possible
                 elif (self.velocity[0] > 0 or self.velocity[1] < 0) and self.velocity[1] == 0:
-                    print("scenario #7")
                     pass
                 
                 # Find point of reflection and set ball to reflection position
                 self.reflect_pos = self.previous_pos.move(self.velocity * self.consumed_vector)
                 self.rect.topleft = self.reflect_pos[0:2]
                 self.velocity.reflect_ip(self.normal)
-                #print("ball, 188: self.consumend_vektor: ",self.consumed_vector)
                 unused_vector -= self.consumed_vector
-                #print("ball, 190, unused vector: ", unused_vector)
-                #print()
                 self.available_velocity = self.velocity * unused_vector
                 self.end_pos = self.rect.topleft + self.available_velocity # ball would end here when it could have used his full velocity
                 if unused_vector > 0.01:
