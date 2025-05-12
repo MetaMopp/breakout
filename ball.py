@@ -1,5 +1,7 @@
 # metamopp[at]gmail.com
 
+# you are importing this file in game and NOT ball_n.py
+
 import pygame
 from pygame.locals import *
 from pygame.math import Vector2
@@ -96,6 +98,11 @@ class Ball:
             # set the nearest colliding brick to hit_brick
             hit_brick = all_bricks[collision_list[0]]
             # collision on X or Y-Axis? 
+            # # # REFRACT: new code : line intersection hit brick 
+            # clipline(x1, y1, x2, y2) -> ((cx1, cy1), (cx2, cy2))
+            ### does vector self.previous_pos + self.rect intersect with any line?
+            ### nearest line from self.previos.pos. -> first intercsection -> pythogoras (without square)
+            ### if left/rigth -> hit_y
             intersection = self.rect.clip(hit_brick)
             hit_y = intersection[2] > intersection[3]
 
@@ -109,12 +116,20 @@ class Ball:
                 # 1 diagonal: from bottomright to topleft
                 if self.velocity[0] < 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.topleft
-                    print("scenario #1")
+                    line = self.previous_pos.topleft + self.rect.topleft
+                    clipped_line = list(hit_brick.rect.clipline(line))
+                    if clipped_line != []:
+                        point_1 = clipped_line[0]
+                        point_2 = clipped_line[1]
+                        print("start_line: ", point_1[0])
+                        print("end_line: ", clipped_line[1]) 
+                        self.previous_pos.topleft
+                    #print("scenario #1")
                     # check axis and calc actual vector consumption
                     if hit_y:
                         self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
                         self.normal.xy = 0, 1
-                        print("hit_y")
+                        #print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
                         self.normal.xy = -1, 0
@@ -122,13 +137,13 @@ class Ball:
                 # 2 diagonal: from bottomleft to top right
                 elif self.velocity[0] > 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.topright
-                    print("scenario #2")
+                    #print("scenario #2")
                     
                     # check axis and calc actual vector consumption
                     if hit_y:
                         self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
                         self.normal.xy = 0, 1
-                        print("hit_y")
+                        #print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x 
                         self.normal.xy = -1, 0
@@ -136,13 +151,13 @@ class Ball:
                 # 3 diagonal: from topleft to bottomright
                 elif self.velocity[0] < 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottomleft
-                    print("scenario #3")
+                    #print("scenario #3")
                     
                     # check axis and calc actual vector consumption
                     if hit_y :
                         self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                         self.normal.xy = 0, -1
-                        print("hit_y")
+                        #print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity.x 
                         self.normal.xy = 1, 0
@@ -150,12 +165,12 @@ class Ball:
                 # 4 diagonal: from topright to bottomleft
                 elif self.velocity[0] > 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottomright
-                    print("scenario #4")
+                    #print("scenario #4")
                     # check axis and calc actual vector consumption
                     if hit_y:
                         self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                         self.normal.xy = 0, -1
-                        print("hit_y")
+                        #print("hit_y")
                     else:
                         self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x
                         self.normal.xy = -1, 0
@@ -163,16 +178,16 @@ class Ball:
                 # 5 vertical: from top to bottom // CAN ONLY BE Y-AXIS
                 elif self.velocity[0] == 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottom
-                    print("scenario #5")
+                    #print("scenario #5")
                     self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                     self.normal.xy = 0, -1
-                    print("hit_y")
+                    #print("hit_y")
 
                 # 6 vertical from bottom to top
                 elif self.velocity[0] == 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.top
-                    print("scenario #6")
-                    print("hit_y")
+                    #print("scenario #6")
+                    #print("hit_y")
                     self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y
                     self.normal.xy = 0, 1
 
@@ -185,10 +200,10 @@ class Ball:
                 self.reflect_pos = self.previous_pos.move(self.velocity * self.consumed_vector)
                 self.rect.topleft = self.reflect_pos[0:2]
                 self.velocity.reflect_ip(self.normal)
-                print("ball, 188: self.consumend_vektor: ",self.consumed_vector)
+                #print("ball, 188: self.consumend_vektor: ",self.consumed_vector)
                 unused_vector -= self.consumed_vector
-                print("ball, 190, unused vector: ", unused_vector)
-                print()
+                #print("ball, 190, unused vector: ", unused_vector)
+                #print()
                 self.available_velocity = self.velocity * unused_vector
                 self.end_pos = self.rect.topleft + self.available_velocity # ball would end here when it could have used his full velocity
                 if unused_vector > 0.01:
