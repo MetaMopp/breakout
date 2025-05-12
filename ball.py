@@ -195,19 +195,19 @@ class Ball:
                         self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity.x
                         self.normal.xy = -1, 0
 
-                # 5 vertical: from top to bottom // CAN ONLY BE BOTTOM/TOP HIT ON BRICK
+                # 5 ball moves vertical: from top to bottom // CAN ONLY BE BOTTOM/TOP HIT ON BRICK
                 elif self.velocity[0] == 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottom
                     self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
                     self.normal.xy = 0, -1    
 
-                # 6 vertical from bottom to top
+                # 6 ball moves vertical from bottom to top
                 elif self.velocity[0] == 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.top
                     self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y
                     self.normal.xy = 0, 1
 
-                # horizontal: NOT allowed // no 90° left/right collison possible
+                # ball moves horizontal: NOT allowed // no 90° left/right collison possible
                 elif (self.velocity[0] > 0 or self.velocity[1] < 0) and self.velocity[1] == 0:
                     pass
                 
