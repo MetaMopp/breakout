@@ -27,7 +27,7 @@ class Gamestate:
         self.start_count = True # should be true
         self.countdown = 0
         self.stopwatch = Stopwatch()
-        self.rounded_time = None
+        #self.rounded_time = None # not needed anymore!/?
         self.brick_score = 0 
         self.score = 0
         self.spike_start = True # should be true

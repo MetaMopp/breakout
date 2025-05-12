@@ -131,7 +131,7 @@ class Ball:
                 if self.velocity[0] < 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.topleft
                     self.end = self.rect.topleft
-                    hit_horizontal = self.find_horizontal_hit(self, hit_brick)
+                    hit_horizontal = self.find_horizontal_hit(hit_brick)
                     '''line = self.previous_pos.topleft + self.rect.topleft
                     clipped_line = list(hit_brick.rect.clipline(line))
                     if clipped_line != []:
@@ -160,7 +160,7 @@ class Ball:
                 elif self.velocity[0] > 0 and self.velocity[1] < 0:
                     self.start = self.previous_pos.topright
                     self.end = self.rect.topright
-                    hit_horizontal = self.find_horizontal_hit(self, hit_brick)
+                    hit_horizontal = self.find_horizontal_hit(hit_brick)
                     # check axis and calc actual vector consumption
                     if hit_horizontal:
                         self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
@@ -173,7 +173,7 @@ class Ball:
                 elif self.velocity[0] < 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottomleft
                     self.end = self.rect.bottomleft
-                    hit_horizontal = self.find_horizontal_hit(self, hit_brick)
+                    hit_horizontal = self.find_horizontal_hit(hit_brick)
                     # check axis and calc actual vector consumption
                     if hit_horizontal :
                         self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
@@ -186,7 +186,7 @@ class Ball:
                 elif self.velocity[0] > 0 and self.velocity[1] > 0:
                     self.start = self.previous_pos.bottomright
                     self.end = self.rect.bottomright
-                    hit_horizontal = self.find_horizontal_hit(self, hit_brick)
+                    hit_horizontal = self.find_horizontal_hit(hit_brick)
                     # check axis and calc actual vector consumption
                     if hit_horizontal:
                         self.consumed_vector = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity.y 
