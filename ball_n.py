@@ -1,5 +1,7 @@
 # metamopp[at]gmail.com
 
+# you are not importing this file in game but "ball.py"
+
 import pygame
 from pygame.locals import *
 from pygame.math import Vector2
@@ -72,7 +74,7 @@ class Ball:
             if abs(self.velocity.y) < 30:
                 self.velocity.xy - self.velocity.xy
 
-        ### TO DO: Collision detection with bricks ###
+        # Collision detection with bricks 
        
         # Returns list of all indices containing rects that collide with the Rect. If no intersecting rectangles are found: empty list
         collision_list = self.rect.collidelistall(all_bricks) 
