@@ -81,10 +81,10 @@ class Ball:
             nearest = None 
             # calculate the collision with the shortest distance
             for i in collision_list:
-                print("ball, 83: listed_brick as index: ", i)
+                #print("ball, 83: listed_brick as index: ", i)
                 listed_brick = all_bricks[i]
                 distance = (listed_brick.rect.centerx - self.rect.centerx)**2 + (listed_brick.rect.centery - self.rect.centery)**2 
-                print("ball, 85: distance listed_brick: ", distance)
+                #print("ball, 85: distance listed_brick: ", distance)
                 # first iteration: set the nearest distance to the first distance that was calculated and set current indix as [0] in collision list
                 if nearest == None:
                     nearest = distance
@@ -94,7 +94,7 @@ class Ball:
                     nearest = distance
                     collision_list[0] = i
                 
-            print("ball, 95: choosen listed brick in collision list: ", collision_list[0])
+            #print("ball, 95: choosen listed brick in collision list: ", collision_list[0])
             # set the nearest colliding brick to hit_brick
             hit_brick = all_bricks[collision_list[0]]
             # collision on X or Y-Axis? 
@@ -103,8 +103,8 @@ class Ball:
             ### does vector self.previous_pos + self.rect intersect with any line?
             ### nearest line from self.previos.pos. -> first intercsection -> pythogoras (without square)
             ### if left/rigth -> hit_y
-            intersection = self.rect.clip(hit_brick)
-            hit_y = intersection[2] > intersection[3]
+            intersection_old = self.rect.clip(hit_brick)
+            hit_y = intersection_old[2] > intersection_old[3]
 
             # call process_hit method
             hit_brick.process_hit(hit_brick, all_bricks, gamestate)
@@ -121,9 +121,18 @@ class Ball:
                     if clipped_line != []:
                         point_1 = clipped_line[0]
                         point_2 = clipped_line[1]
-                        print("start_line: ", point_1[0])
-                        print("end_line: ", clipped_line[1]) 
-                        self.previous_pos.topleft
+                        dis_point_1 = (point_1[0] - self.previous_pos.topleft[0])**2 + (point_1[1] - self.previous_pos.topleft[1])**2
+                        print(dis_point_1)
+                        dis_point_2 = (point_2[0] - self.previous_pos.topleft[0])**2 + (point_2[1] - self.previous_pos.topleft[1])**2
+                        print(dis_point_2)
+                        if dis_point_1 < dis_point_2:
+                           intersection = point_1
+                        else:
+                            intersection = point_2
+                        print("nearest:" , intersection)
+                        if intersection[0] == hit_brick.rect.right:
+                            hit_y
+
                     #print("scenario #1")
                     # check axis and calc actual vector consumption
                     if hit_y:
