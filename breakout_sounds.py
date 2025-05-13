@@ -8,7 +8,7 @@ class Sounds:
     
     pygame.mixer.init()
 
-    destroy_brick = pygame.mixer.Sound("assets/mixkit-brick-2.wav") #("mixkit-hard-pop.wav")
+    destroy_brick = pygame.mixer.Sound("assets/mixkit-brick-2.wav") 
     level_sound = pygame.mixer.Sound("assets/mixkit-level.wav")
     game_over_sound = pygame.mixer.Sound("assets/mixkit-game-over.wav")
     obstacle_clash = pygame.mixer.Sound("assets/mixkit-obstacle-2.wav")

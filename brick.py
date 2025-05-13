@@ -1,6 +1,7 @@
+# metamopp[at]gmail.com
+
 import pygame
 from pygame.locals import *
-from pygame.math import Vector2
 from events import Events
 from breakout_sounds import Sounds  
 

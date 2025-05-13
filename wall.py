@@ -1,6 +1,6 @@
-import pygame
+# metamopp[at]gmail.com
+
 from pygame.locals import *
-from pygame.math import Vector2
 from brick import Brick
 
 # define a class wall, consisting of bricks
