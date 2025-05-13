@@ -41,7 +41,7 @@ class Gamestate:
         Level 50, 7    # 8    Level 51, 8          # 9
         Level 52, 9    # 10   Level 53, "bonus_3"  # 11
         Level 54, 10   # 12'''
-        self.current_level_index = 12
+        self.current_level_index = 3
         self.current_level = self.levels[self.current_level_index]        
         self.status_quo = StatusQuo() 
         self.you_won = YouWon() 

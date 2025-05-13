@@ -5,7 +5,6 @@ from pygame.locals import *
 import pygame.freetype
 from game import Game
 from events import Events
-from stopwatch import Stopwatch
 
 # initialize the game setup and mainloop
 
@@ -46,6 +45,7 @@ class Setup:
                 # LIVE LOST: substracte live, enable failure mode
                 elif event.type == Events.LIVE_LOST:
                     self.game.gamestate.live_lost(self.game.ball)
+                    self.game.paddle.center(self.size)
                 # CLEAR LEVEL: stop time, count score, increase level if not last level, enable succes mode
                 elif event.type == Events.CLEAR_LEVEL:
                     self.game.gamestate.level_cleared()
@@ -69,14 +69,6 @@ class Setup:
                 # CONTINUE GAME: return to gameplay mode and set to level 1
                 elif event.type == Events.CONTINUE_GAME:
                     self.game.gamestate.set_initial_state()
-                    #self.key_behavior = pygame.key.set_repeat(1)
-                    # to do: need to create initial state again
-                    #self.game.gamestate.brick_score = 0
-                    #self.game.gamestate.stopwatch = Stopwatch()
-                    #self.game.gamestate.lives = 3
-                    #self.game.gamestate.current_level_index = 0 
-                    #self.game.gamestate.current_level = self.game.gamestate.levels[self.game.gamestate.current_level_index]
-                    #self.game.gamestate.state = 3
                     print("should be gamestate 3: ", self.game.gamestate.state)
                 # QUIT GAME
                 elif event.type == Events.QUIT_GAME:

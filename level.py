@@ -4,9 +4,12 @@ import pygame
 from pygame.locals import *
 from wall import Wall
 from brick import Brick
-from gameobject import Paddle
-from gameobject import Spike
-from gameobject import Coin 
+from paddle import Paddle
+#from gameobject import Paddle
+#from gameobject import Spike
+from spike import Spike
+from coin import Coin
+#from gameobject import Coin 
 
 class Level:
     # create a list with all game levels
@@ -252,7 +255,7 @@ class Level:
         coins = []
         for p in self.coins_p:
             coin = Coin()
-            coin.distribute(p[1], p[2], p[3], p[4], p[5], p[6])
+            coin.pattern(p[1], p[2], p[3], p[4], p[5], p[6])
             coins.append(coin)
         return coins
         
