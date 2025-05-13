@@ -77,9 +77,9 @@ class Setup:
             if self.current_level_ID != self.game.gamestate.current_level.ID:
                 self.game.game_level(self.size)
                 self.current_level_ID = self.game.gamestate.current_level.ID
-                print("setup 85: self.game.gamestate.current_level.ID", self.game.gamestate.current_level.ID)
-                print("setup 86: current level_ID: ", self.current_level_ID)
-                print("setup 87: current level: ", self.game.gamestate.current_level.name)
+                print("setup 80: self.game.gamestate.current_level.ID", self.game.gamestate.current_level.ID)
+                print("setup 81: current level_ID: ", self.current_level_ID)
+                print("setup 82: current level: ", self.game.gamestate.current_level.name)
 
             # enable visibility of level screen by setting the counter to 150 frames
             if (self.game.gamestate.state == 3 or self.game.gamestate.state == 2) and self.game.gamestate.start_count == True :

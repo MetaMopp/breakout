@@ -56,8 +56,7 @@ class Gamestate:
             self.current_level = self.levels[self.current_level_index]
             self.state = 3  
             self.spike_start = True
-            self.start_count = True # enable to re-enter countdown-loop in setupclass
-            print("78, game: level.name: ", self.current_level.name, "game: gamestate: ", self.state)          
+            self.start_count = True # enable to re-enter countdown-loop in setupclass         
         elif self.state != 2:
             Events.post_you_won()
 
