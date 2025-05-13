@@ -3,13 +3,11 @@
 import pygame
 from pygame.locals import *
 from wall import Wall
-from brick import Brick
+#from brick import Brick
 from paddle import Paddle
-#from gameobject import Paddle
-#from gameobject import Spike
 from spike import Spike
 from coin import Coin
-#from gameobject import Coin 
+
 
 class Level:
     # create a list with all game levels
@@ -228,7 +226,7 @@ class Level:
         for p in self.wall_p:
             wall = Wall(p[3], p[4], p[5], p[6], p[7], p[8], p[9])
             #brick = Brick(p[0], p[1], p[2], p[3])
-            wall.pattern(p[10], p[0], p[1], p[2]) #p[0]=color, p[1]=type, p[2]= velocity
+            wall.build_destructibles(p[10], p[0], p[1], p[2]) #p[0]=color, p[1]=type, p[2]= velocity
             #brick.build_wall(p[4], p[5], p[6], p[7], p[8], p[9])
             walls.append(wall)
         return walls
@@ -239,7 +237,7 @@ class Level:
         for p in self.obstacles_p:
             obstacle = Wall(p[3], p[4], p[5], p[6], p[7], p[8], p[9])
             #obstacle = Brick(p[0], p[1], p[2], p[3])
-            obstacle.build_obstacle(p[10], p[0], p[1], p[2])
+            obstacle.build_obstacles(p[10], p[0], p[1], p[2])
             obstacles.append(obstacle)
             n_bricks += len(obstacle.bricks)
         return obstacles, n_bricks
@@ -255,7 +253,7 @@ class Level:
         coins = []
         for p in self.coins_p:
             coin = Coin()
-            coin.pattern(p[1], p[2], p[3], p[4], p[5], p[6])
+            coin.build(p[1], p[2], p[3], p[4], p[5], p[6])
             coins.append(coin)
         return coins
         

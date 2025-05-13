@@ -32,7 +32,6 @@ class Brick:
             else:
                 Sounds.spike_sound.stop()
                 Sounds.touch_brick.play()
-                #wall.hit_bricks.append(self.hit) 
         
     def draw(self, screen):
          pygame.draw.rect(screen, self.color, self.rect, border_radius=5)

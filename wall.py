@@ -13,13 +13,10 @@ class Wall:
         self.vgap = vgap
         self.hgap = hgap
         self.dis_left = dis_left
-        
-        #self.dis_top = dis_top -> currently: DISTANCETOP in pattern-method
         self.bricks =[] # list of bricks
-        #self.hit_bricks = []
-
+       
     ### WALL PATTTERNS ###
-    def pattern(self, name, color, hit_type, velocity):
+    def build_destructibles(self, name, color, hit_type, velocity):
         DISTANCETOP = 70 # replace this later: self.dis_top
         if name == 1 or name == "bonus_1":
             for column in range(self.column):
@@ -117,10 +114,9 @@ class Wall:
                         x = (self.dis_left + 73) + row * (self.width + (self.hgap+2))
                         self.bricks.append(Brick(color, hit_type, velocity, x, y, self.width, self.hight))
 
-    def build_obstacle(self, name, color, hit_type, velocity):
+    ### OBSTACLE PATTERNS ###
+    def build_obstacles(self, name, color, hit_type, velocity):
         DISTANCETOP = 70 
-
-        ###  OBSTACLE PATTERNS ###
         
         if name == 3:
             for column in range(self.column):

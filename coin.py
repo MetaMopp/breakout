@@ -16,7 +16,7 @@ class Coin:
         self.hight = 30 
         self.coins = []
 
-    def pattern(self, column, row, vgap, hgap, dis_left, name):
+    def build(self, column, row, vgap, hgap, dis_left, name):
         self.coin_column = column
         self.coin_row = row
         self.coins = []
