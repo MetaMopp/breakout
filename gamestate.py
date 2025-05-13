@@ -1,3 +1,5 @@
+ # metamopp[at]gmail.com
+
 import pygame
 from pygame.locals import *
 import time
@@ -8,7 +10,7 @@ from breakout_sounds import Sounds
 from status_quo import StatusQuo
 from draw_display import YouWon, GameOver, LevelDisplay
 
-### GAMESTATE ###
+### GAMESTATE: STATE, SCORE, LEVEL, LIVES... ###
 
 class Gamestate:
     def __init__(self):
@@ -19,7 +21,6 @@ class Gamestate:
         self.start_count = True # should be true
         self.countdown = 0
         self.stopwatch = Stopwatch()
-        #self.rounded_time = None # not needed anymore!/?
         self.brick_score = 0 
         self.score = 0
         self.spike_start = True # should be true
@@ -56,8 +57,7 @@ class Gamestate:
             self.state = 3  
             self.spike_start = True
             self.start_count = True # enable to re-enter countdown-loop in setupclass
-            print("78, game: level.name: ", self.current_level.name, "game: gamestate: ", self.state)
-                    
+            print("78, game: level.name: ", self.current_level.name, "game: gamestate: ", self.state)          
         elif self.state != 2:
             Events.post_you_won()
 
@@ -69,7 +69,7 @@ class Gamestate:
             self.coin_score = 0
    
     # if live is lost: subtract live, play sound, recenter ball, enable failure mode
-    def live_lost(self, ball):
+    def handle_live_lost(self, ball):
         self.lives = self.lives - 1 
         Sounds.live_lost_sound.play()
         time.sleep(.6)

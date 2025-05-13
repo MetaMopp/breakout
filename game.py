@@ -2,7 +2,6 @@
 
 import pygame
 from pygame.locals import *
-from stopwatch import Stopwatch 
 from events import Events
 from ball import Ball
 from gamestate import Gamestate

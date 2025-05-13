@@ -3,7 +3,6 @@
 import pygame
 from pygame.locals import *
 from pygame.math import Vector2
-#import random 
 from events import Events
 from breakout_sounds import Sounds  
 
@@ -53,7 +52,7 @@ class Ball:
 
         # save position for later access
         self.previous_pos = pygame.FRect(self.rect)   
-        
+
         # collision detection with window boundary     
         self.rect.move_ip(self.velocity * unused_vector)   
         if self.rect.left < 0:

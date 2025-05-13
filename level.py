@@ -1,9 +1,8 @@
 # metamopp[at]gmail.com
 
-import pygame
+#import pygame
 from pygame.locals import *
 from wall import Wall
-#from brick import Brick
 from paddle import Paddle
 from spike import Spike
 from coin import Coin

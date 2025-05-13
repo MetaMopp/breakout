@@ -2,7 +2,6 @@
 
 import pygame
 from pygame.locals import *
-import pygame.freetype
 from game import Game
 from events import Events
 
@@ -44,7 +43,7 @@ class Setup:
                     self.game.gamestate.increase_coin_score()
                 # LIVE LOST: substracte live, enable failure mode
                 elif event.type == Events.LIVE_LOST:
-                    self.game.gamestate.live_lost(self.game.ball)
+                    self.game.gamestate.handle_live_lost(self.game.ball)
                     self.game.paddle.center(self.size)
                 # CLEAR LEVEL: stop time, count score, increase level if not last level, enable succes mode
                 elif event.type == Events.CLEAR_LEVEL:

@@ -16,6 +16,7 @@ class Coin:
         self.hight = 30 
         self.coins = []
 
+     ### COIN PATTERNS ###
     def build(self, column, row, vgap, hgap, dis_left, name):
         self.coin_column = column
         self.coin_row = row
@@ -27,7 +28,6 @@ class Coin:
         self.dis_left = dis_left 
         DISTANCETOP = 71 
 
-        ### COIN PATTERNS ###
         if name == "bonus_1":
             for column in range(self.coin_column):
                 y = DISTANCETOP + column * (self.hight + self.vgap)

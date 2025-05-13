@@ -2,7 +2,6 @@
 
 import pygame
 from pygame.locals import *
-from events import Events
 
 ### GAMEOBJECT: PADDLE ###
               
