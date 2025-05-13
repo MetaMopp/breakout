@@ -68,14 +68,15 @@ class Setup:
                     print("should be gamestate 5: ", self.game.gamestate.state)
                 # CONTINUE GAME: return to gameplay mode and set to level 1
                 elif event.type == Events.CONTINUE_GAME:
-                    self.key_behavior = pygame.key.set_repeat(1)
+                    self.game.gamestate.set_initial_state()
+                    #self.key_behavior = pygame.key.set_repeat(1)
                     # to do: need to create initial state again
-                    self.game.gamestate.brick_score = 0
-                    self.game.gamestate.stopwatch = Stopwatch()
-                    self.game.gamestate.lives = 3
-                    self.game.gamestate.current_level_index = 0 
-                    self.game.gamestate.current_level = self.game.gamestate.levels[self.game.gamestate.current_level_index]
-                    self.game.gamestate.state = 3
+                    #self.game.gamestate.brick_score = 0
+                    #self.game.gamestate.stopwatch = Stopwatch()
+                    #self.game.gamestate.lives = 3
+                    #self.game.gamestate.current_level_index = 0 
+                    #self.game.gamestate.current_level = self.game.gamestate.levels[self.game.gamestate.current_level_index]
+                    #self.game.gamestate.state = 3
                     print("should be gamestate 3: ", self.game.gamestate.state)
                 # QUIT GAME
                 elif event.type == Events.QUIT_GAME:

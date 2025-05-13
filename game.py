@@ -7,7 +7,6 @@ import time
 from stopwatch import Stopwatch 
 from events import Events
 from ball import Ball
-#from gameobject import Ball
 from level import Level
 from breakout_sounds import Sounds 
 from status_quo import StatusQuo
@@ -88,6 +87,16 @@ class Gamestate:
             time.sleep(.5)
             Sounds.game_over_sound.play()
             self.state = 1 # failure mode, game over screen
+
+    # set the initial state after pressing "continue: Y" to restart from level 1
+    def set_initial_state(self):
+        self.key_behavior = pygame.key.set_repeat(1)
+        self.brick_score = 0
+        self.stopwatch = Stopwatch()
+        self.lives = 3
+        self.current_level_index = 0 
+        self.current_level = self.levels[self.current_level_index]
+        self.state = 3
                  
 
 ### GAME: OBJECTS, MODES & LEVEL ###
