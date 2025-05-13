@@ -1,11 +1,9 @@
 # metamopp[at]gmail.com
 
-# you are importing this file in game and NOT ball_n.py
-
 import pygame
 from pygame.locals import *
 from pygame.math import Vector2
-import random 
+#import random 
 from events import Events
 from breakout_sounds import Sounds  
 
@@ -55,6 +53,7 @@ class Ball:
 
         # save position for later access
         self.previous_pos = pygame.FRect(self.rect)   
+        
         # collision detection with window boundary     
         self.rect.move_ip(self.velocity * unused_vector)   
         if self.rect.left < 0:
@@ -94,8 +93,7 @@ class Ball:
             if abs(self.velocity.y) < (0.25 * self.velocity.length()):
                 self.velocity.xy = self.velocity.xy
 
-        ### TO DO: Collision detection with bricks ###
-       
+        # collision detection with bricks 
         # Returns list of all indices containing rects that collide with the Rect. If no intersecting rectangles are found: empty list
         collision_list = self.rect.collidelistall(all_bricks) 
         if len(collision_list) >= 1:
@@ -113,13 +111,8 @@ class Ball:
                     nearest = distance
                     collision_list[0] = i
                 
-            
             # set the nearest colliding brick to hit_brick
             hit_brick = all_bricks[collision_list[0]]
-           
-            #intersection_old = self.rect.clip(hit_brick)
-            #hit_y = intersection_old[2] > intersection_old[3]
-
             # call process_hit method
             hit_brick.process_hit(hit_brick, all_bricks, gamestate)
 
@@ -132,22 +125,6 @@ class Ball:
                     self.start = self.previous_pos.topleft
                     self.end = self.rect.topleft
                     hit_horizontal = self.find_horizontal_hit(hit_brick)
-                    '''line = self.previous_pos.topleft + self.rect.topleft
-                    clipped_line = list(hit_brick.rect.clipline(line))
-                    if clipped_line != []:
-                        point_1 = clipped_line[0]
-                        point_2 = clipped_line[1]
-                        dis_point_1 = (point_1[0] - self.previous_pos.topleft[0])**2 + (point_1[1] - self.previous_pos.topleft[1])**2
-                        print(dis_point_1)
-                        dis_point_2 = (point_2[0] - self.previous_pos.topleft[0])**2 + (point_2[1] - self.previous_pos.topleft[1])**2
-                        print(dis_point_2)
-                        if dis_point_1 < dis_point_2:
-                           intersection = point_1
-                        else:
-                            intersection = point_2
-                        print("nearest:" , intersection)
-                        if intersection[0] == hit_brick.rect.right:
-                            hit_y'''
                     # check axis and calc actual vector consumption
                     if hit_horizontal:
                         self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y 
