@@ -37,7 +37,6 @@ class Ball:
                 intersection = point_1
             else:
                 intersection = point_2
-        
             if intersection[1] == hit_brick.rect.bottom or intersection[1] == hit_brick.rect.top:
                 hit_horizontal = True
         return hit_horizontal

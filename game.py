@@ -59,7 +59,6 @@ class Game:
                 #print("n_bricks: ", self.n_bricks)
                 #print("game 141: len all_bricks: ", len(self.all_bricks))
             if (len(self.all_bricks) == self.n_bricks) and (self.coins == []):
-                print(len(self.all_bricks))
                 if len(self.spikes) != 0:
                     self.spikes.clear()
                 Events.post_clear_level()
