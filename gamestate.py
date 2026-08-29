@@ -17,7 +17,7 @@ class Gamestate:
         # set initial states
         self.key_behavior = pygame.key.set_repeat(1)
         self.state = 3 # initial state should be 3 = level screen 
-        self.lives = 7 # should be 3
+        self.lives = 3 # should be 3
         self.start_count = True # should be true
         self.countdown = 0
         self.stopwatch = Stopwatch()
@@ -35,7 +35,7 @@ class Gamestate:
         Level 50, 7    # 8    Level 51, 8          # 9
         Level 52, 9    # 10   Level 53, "bonus_3"  # 11
         Level 54, 10   # 12'''
-        self.current_level_index = 10
+        self.current_level_index = 0
         self.current_level = self.levels[self.current_level_index]        
         self.status_quo = StatusQuo() 
         self.you_won = YouWon() 

@@ -30,7 +30,10 @@ class Spike:
         if gamestate.spike_count == 0:
             Sounds.spike_sound.stop()            
         
-        self.clipped = paddle.rect.clipline((self.points[0], self.points[1]) or paddle.rect.clipline((self.points[1], self.points[2])) or paddle.rect.clipline((self.points[2], self.points[0])))
+        # test ALL THREE edges of the spike triangle against the paddle.
+        self.clipped = (paddle.rect.clipline((self.points[0], self.points[1]))
+                        or paddle.rect.clipline((self.points[1], self.points[2]))
+                        or paddle.rect.clipline((self.points[2], self.points[0])))
         if self.clipped:
             a = self.clipped[0]
             (first, second) = a # unpack tuple 
