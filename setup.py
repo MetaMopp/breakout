@@ -45,6 +45,7 @@ class Setup:
                 elif event.type == Events.LIVE_LOST:
                     self.game.gamestate.handle_live_lost(self.game.ball)
                     self.game.paddle.center(self.size)
+                    pygame.event.clear(pygame.KEYDOWN) 
                 # CLEAR LEVEL: stop time, count score, increase level if not last level, enable succes mode
                 elif event.type == Events.CLEAR_LEVEL:
                     self.game.gamestate.level_cleared()

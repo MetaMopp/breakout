@@ -1,0 +1,17 @@
+# --- Python virtual environment ---------------------------------
+# rebuildable at any time with:  pip install -r requirements.txt
+.venv/
+venv/
+env/
+
+# --- Python bytecode cache --------------------------------------
+# regenerated automatically every time the game runs
+__pycache__/
+*.py[cod]
+
+# --- editor / OS clutter ----------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

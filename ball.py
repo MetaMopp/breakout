@@ -22,24 +22,57 @@ class Ball:
     def draw(self, screen):
         screen.blit(self.ball_img, self.rect)
 
+    # how far into this step the ball first touches that brick:
+    # 0 = right at the start, 1 = at the very end of the step.
+    # Used to pick which of several overlapping bricks was hit FIRST.
+    def time_of_impact(self, hit_brick):
+        infinite = float('inf')
+        # when the ball does not move on an axis it never 'enters' on that axis,
+        # so that axis puts no limit on when the contact happens
+        if self.velocity[0] > 0:
+            entry_x = (hit_brick.rect.left - self.previous_pos.right) / self.velocity[0]
+        elif self.velocity[0] < 0:
+            entry_x = (hit_brick.rect.right - self.previous_pos.left) / self.velocity[0]
+        else:
+            entry_x = -infinite # ball is not moving on x-axis
+        if self.velocity[1] > 0:
+            entry_y = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity[1]
+        elif self.velocity[1] < 0:
+            entry_y = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity[1]
+        else:
+            entry_y = -infinite # ball is notmoving on x-axis
+        # the ball is only really touching once BOTH axes overlap -> the later one wins
+        return max(entry_x, entry_y)
+
+
     # this method is needed and called in the update-method to find the hit_brick's side of collision
     def find_horizontal_hit(self, hit_brick):
-        hit_horizontal = 0
-        line = self.start + self.end
-        clipped_line = list(hit_brick.rect.clipline(line))
-        if clipped_line != []:
-            point_1 = clipped_line[0]
-            point_2 = clipped_line[1]
-            dis_point_1 = (point_1[0] - self.start[0])**2 + (point_1[1] - self.start[1])**2
-            dis_point_2 = (point_2[0] - self.start[0])**2 + (point_2[1] - self.start[1])**2
-            # smallest distance from clipped_line start-/endpoint = (first) intersection
-            if dis_point_1 < dis_point_2:
-                intersection = point_1
-            else:
-                intersection = point_2
-            if intersection[1] == hit_brick.rect.bottom or intersection[1] == hit_brick.rect.top:
-                hit_horizontal = True
-        return hit_horizontal
+        # using Minkowsi sum:
+        # Grow the brick by the ball's size, then trace the ball's CENTER through it.
+        # Tracing one corner fails whenever the ball overhangs the brick
+        grown = pygame.FRect(
+            hit_brick.rect.x - self.rect.width / 2,
+            hit_brick.rect.y - self.rect.height / 2,
+            hit_brick.rect.width + self.rect.width,
+            hit_brick.rect.height + self.rect.height,
+        )
+        start = self.previous_pos.center
+        clipped_line = list(grown.clipline(start + self.rect.center))
+        if clipped_line == []:
+            # No crossing found. Fall back to the dominant axis instead of silently
+            # reporting a side hit - that fallthrough was the teleport bug.
+            return abs(self.velocity.y) >= abs(self.velocity.x)
+        point_1 = clipped_line[0]
+        point_2 = clipped_line[1]
+        dis_point_1 = (point_1[0] - start[0])**2 + (point_1[1] - start[1])**2
+        dis_point_2 = (point_2[0] - start[0])**2 + (point_2[1] - start[1])**2
+        # smallest distance from clipped_line start-/endpoint = (first) intersection
+        if dis_point_1 < dis_point_2:
+            intersection = point_1
+        else:
+            intersection = point_2
+        # entered through the grown rect's top/bottom edge = hit a horizontal face
+        return intersection[1] == grown.top or intersection[1] == grown.bottom
 
 
     def update(self, size, paddle, all_bricks, events, gamestate, coins, unused_vector):
@@ -96,10 +129,12 @@ class Ball:
         collision_list = self.rect.collidelistall(all_bricks) 
         if len(collision_list) >= 1:
             nearest = None 
-            # calculate the collision with the shortest distance
+            # pick the brick that is reached FIRST in time, not the one whose centre
+            # happens to be closest: the ball (35px) is tall enough to overlap two
+            # rows at once, and then the nearest centre can be the wrong brick.
             for i in collision_list:
                 listed_brick = all_bricks[i]
-                distance = (listed_brick.rect.centerx - self.rect.centerx)**2 + (listed_brick.rect.centery - self.rect.centery)**2 
+                distance = self.time_of_impact(listed_brick)
                 # first iteration: set the nearest distance to the first distance that was calculated and set current indix as [0] in collision list
                 if nearest == None:
                     nearest = distance
@@ -182,18 +217,29 @@ class Ball:
                     self.consumed_vector = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity.y
                     self.normal.xy = 0, 1
 
-                # ball moves horizontal: NOT allowed // no 90° left/right collison possible
-                elif (self.velocity[0] > 0 or self.velocity[1] < 0) and self.velocity[1] == 0:
-                    pass
+                # 7 ball moves horizontal // CAN ONLY BE LEFT/RIGHT HIT ON BRICK
+                # velocity is never (0,0) here, so velocity[0] cannot be 0 as well
+                elif self.velocity[1] == 0:
+                    if self.velocity[0] > 0:   # moving right -> hits the brick's left face
+                        self.consumed_vector = (hit_brick.rect.left - self.previous_pos.right) / self.velocity[0]
+                    else:                      # moving left  -> hits the brick's right face
+                        self.consumed_vector = (hit_brick.rect.right - self.previous_pos.left) / self.velocity[0]
+                    self.normal.xy = -1, 0
                 
                 # Find point of reflection and set ball to reflection position
+                # SAFETY NET: consumed_vector is a FRACTION of this step, so it has to
+                # stay inside 0..unused_vector. Without this one bad classification
+                # can fling the ball hundreds of pixels in a single frame.
+                self.consumed_vector = max(0.0, min(self.consumed_vector, unused_vector))
+
                 self.reflect_pos = self.previous_pos.move(self.velocity * self.consumed_vector)
                 self.rect.topleft = self.reflect_pos[0:2]
                 self.velocity.reflect_ip(self.normal)
                 unused_vector -= self.consumed_vector
                 self.available_velocity = self.velocity * unused_vector
                 self.end_pos = self.rect.topleft + self.available_velocity # ball would end here when it could have used his full velocity
-                if unused_vector > 0.01:
+                # require real progress, else a zero-length step could recurse forever
+                if unused_vector > 0.01 and self.consumed_vector > 0.0001:
                     self.update(size, paddle, all_bricks, events, gamestate, coins, unused_vector)
 
                 
