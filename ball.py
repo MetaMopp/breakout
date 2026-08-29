@@ -22,57 +22,43 @@ class Ball:
     def draw(self, screen):
         screen.blit(self.ball_img, self.rect)
 
-    # how far into this step the ball first touches that brick:
-    # 0 = right at the start, 1 = at the very end of the step.
-    # Used to pick which of several overlapping bricks was hit FIRST.
-    def time_of_impact(self, hit_brick):
+    # On each axis: how far into this step does the ball START to overlap the brick?
+    # 0 = right at the start of the step, 1 = at the very end of it.
+    # Only subtraction and division, so this does not depend on clipline and is
+    # therefore correct on the normal pygame-ce from PyPI as well.
+    def entry_times(self, hit_brick):
         infinite = float('inf')
         # when the ball does not move on an axis it never 'enters' on that axis,
         # so that axis puts no limit on when the contact happens
-        if self.velocity[0] > 0:
+        if self.velocity[0] > 0:   # moving right -> reaches the brick's left edge
             entry_x = (hit_brick.rect.left - self.previous_pos.right) / self.velocity[0]
-        elif self.velocity[0] < 0:
+        elif self.velocity[0] < 0: # moving left  -> reaches the brick's right edge
             entry_x = (hit_brick.rect.right - self.previous_pos.left) / self.velocity[0]
         else:
             entry_x = -infinite # ball is not moving on x-axis
-        if self.velocity[1] > 0:
+        if self.velocity[1] > 0:   # moving down -> reaches the brick's top edge
             entry_y = (hit_brick.rect.top - self.previous_pos.bottom) / self.velocity[1]
-        elif self.velocity[1] < 0:
+        elif self.velocity[1] < 0: # moving up   -> reaches the brick's bottom edge
             entry_y = (hit_brick.rect.bottom - self.previous_pos.top) / self.velocity[1]
         else:
-            entry_y = -infinite # ball is notmoving on x-axis
+            entry_y = -infinite # ball is not moving on y-axis
+        return entry_x, entry_y
+
+
+    # how far into this step the ball first touches that brick.
+    # Used to pick which of several overlapping bricks was hit FIRST.
+    def time_of_impact(self, hit_brick):
+        entry_x, entry_y = self.entry_times(hit_brick)
         # the ball is only really touching once BOTH axes overlap -> the later one wins
         return max(entry_x, entry_y)
 
 
     # this method is needed and called in the update-method to find the hit_brick's side of collision
     def find_horizontal_hit(self, hit_brick):
-        # using Minkowsi sum:
-        # Grow the brick by the ball's size, then trace the ball's CENTER through it.
-        # Tracing one corner fails whenever the ball overhangs the brick
-        grown = pygame.FRect(
-            hit_brick.rect.x - self.rect.width / 2,
-            hit_brick.rect.y - self.rect.height / 2,
-            hit_brick.rect.width + self.rect.width,
-            hit_brick.rect.height + self.rect.height,
-        )
-        start = self.previous_pos.center
-        clipped_line = list(grown.clipline(start + self.rect.center))
-        if clipped_line == []:
-            # No crossing found. Fall back to the dominant axis instead of silently
-            # reporting a side hit - that fallthrough was the teleport bug.
-            return abs(self.velocity.y) >= abs(self.velocity.x)
-        point_1 = clipped_line[0]
-        point_2 = clipped_line[1]
-        dis_point_1 = (point_1[0] - start[0])**2 + (point_1[1] - start[1])**2
-        dis_point_2 = (point_2[0] - start[0])**2 + (point_2[1] - start[1])**2
-        # smallest distance from clipped_line start-/endpoint = (first) intersection
-        if dis_point_1 < dis_point_2:
-            intersection = point_1
-        else:
-            intersection = point_2
-        # entered through the grown rect's top/bottom edge = hit a horizontal face
-        return intersection[1] == grown.top or intersection[1] == grown.bottom
+        entry_x, entry_y = self.entry_times(hit_brick)
+        # the axis that starts to overlap LAST is the one that decided the contact,
+        # so it names the face that was hit: y -> top/bottom, x -> left/right
+        return entry_y > entry_x
 
 
     def update(self, size, paddle, all_bricks, events, gamestate, coins, unused_vector):
