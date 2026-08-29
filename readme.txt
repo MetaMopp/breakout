@@ -24,3 +24,5 @@ Thanks for reading me and have fun! :)
 
 
 ***I used free sounds from "MIXKIT.CO"***
+
+***Font "Digital Jots" by jdm0079 (CC0) - opengameart.org***
