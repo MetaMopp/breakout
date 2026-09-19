@@ -1,5 +1,5 @@
 # usage: pip install -r requirements.txt
 
-pygame-ce==2.5.3
+pygame-ce==2.5.8
 python-stopwatch==1.1.11
 

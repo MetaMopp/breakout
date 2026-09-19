@@ -1,7 +1,7 @@
 
 Welcome to my first programming project: my version of BREAKOUT!
 
-Please make sure you have installed Python3.X.
+Please make sure you have installed Python 3.10 to 3.15 (pygame-ce 2.5.8 ships for these versions).
 
 Please note that you need "pygame-ce" instead of "pygame" to properly run this game. 
 But don't worry, you will find this module in the requirement.txt sheet. 

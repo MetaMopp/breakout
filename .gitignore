@@ -15,3 +15,7 @@ __pycache__/
 *.swp
 .DS_Store
 Thumbs.db
+
+# --- local player data -------------------------------------------
+# created by the game on first highscore; never belongs in the repo
+assets/highscore.csv
