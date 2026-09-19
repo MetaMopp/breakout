@@ -16,6 +16,7 @@ class Spike:
         self.velocity = pygame.Vector2(0,0)
         self.ran_num = random.randint(0, 1300)
         self.clip_list = []
+        self.hit = False # a spike takes one life, once; afterwards it just keeps falling
                      
     def draw(self, screen):
         pygame.draw.polygon(screen, self.color, self.points)
@@ -34,10 +35,11 @@ class Spike:
         self.clipped = (paddle.rect.clipline((self.points[0], self.points[1]))
                         or paddle.rect.clipline((self.points[1], self.points[2]))
                         or paddle.rect.clipline((self.points[2], self.points[0])))
-        if self.clipped:
+        if self.clipped and not self.hit:
             a = self.clipped[0]
             (first, second) = a # unpack tuple 
             self.clip_list.append(first)
             if len(self.clip_list) > 2:
+                self.hit = True # without this the spike posts LIVE_LOST on every frame it still overlaps the paddle
                 Sounds.spike_sound.stop()
                 Events.post_live_lost()
